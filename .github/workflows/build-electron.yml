@@ -31,7 +31,7 @@ jobs:
         run: pnpm electron:compile
 
       - name: Build Electron (Windows)
-        run: pnpm electron-builder --win --config electron-builder.yml
+        run: pnpm electron-builder --win --config electron-builder.yml --publish never
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
