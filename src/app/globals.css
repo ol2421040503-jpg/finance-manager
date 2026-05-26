@@ -43,8 +43,8 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
   --font-sans:
-    -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB',
-    'Microsoft YaHei', ui-sans-serif, system-ui, 'Segoe UI', Roboto,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', ui-sans-serif,
+    system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
@@ -135,13 +135,6 @@
 
 body {
   @apply font-sans;
-  /* 防止 iOS 弹性滚动导致的页面抖动 */
-  overscroll-behavior: none;
-  /* 防止长按弹出菜单 */
-  -webkit-tap-highlight-color: transparent;
-  /* 优化字体渲染 */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 /* 金额数字等宽对齐 */
@@ -149,74 +142,21 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-/* iOS 安全区域 - 顶部 */
-.safe-top {
-  padding-top: env(safe-area-inset-top, 0px);
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-/* iOS 安全区域 - 底部 */
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-/* iOS 安全区域 - Sheet 内容底部 */
-.pb-safe {
-  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+::-webkit-scrollbar-thumb {
+  background: oklch(0.7 0.02 60);
+  border-radius: 3px;
 }
 
-/* 隐藏移动端滚动条但保留滚动功能 */
-.overflow-y-auto {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.overflow-y-auto::-webkit-scrollbar {
-  display: none;
-}
-
-/* 触摸优化：按钮和链接的点击反馈 */
-button,
-a,
-[role="button"] {
-  -webkit-touch-callout: none;
-}
-
-/* 输入框在 iOS 上的优化 */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* 选择框在移动端的全宽 */
-select {
-  -webkit-appearance: none;
-}
-
-/* 防止 iOS 页面缩放（双指缩放、双击缩放） */
-html {
-  touch-action: manipulation;
-}
-
-/* 自定义桌面端滚动条 */
-@media (min-width: 768px) {
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: oklch(0.7 0.02 60);
-    border-radius: 3px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.5 0.02 60);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: oklch(0.5 0.02 60);
 }

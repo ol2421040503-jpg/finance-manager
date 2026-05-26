@@ -14,8 +14,6 @@ export const DEFAULT_ANNUAL_BUDGET: AnnualBudget = {
   propertyFee: 3000,
   physicalExam: 3000,
   travel: 6000,
-  renovation: 0,
-  wedding: 0,
   other: 0,
 };
 

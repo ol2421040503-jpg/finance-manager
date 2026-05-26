@@ -5,17 +5,24 @@ import { useFinance } from "@/lib/finance-store";
 import { formatMoney } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Download, BarChart3, ChevronDown, ChevronUp } from "lucide-react";
+import { Trash2, Download, BarChart3 } from "lucide-react";
 
 export default function HistoryPage() {
   const { data, deleteIncomeRecord, deleteOtherIncomeRecord, deleteExpenseRecord } = useFinance();
   const { incomeHistory, otherIncomeHistory, expenseHistory } = data;
 
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-
   function handleExportCSV() {
     const rows: string[][] = [];
+    // 工资提成
     rows.push(["=== 工资提成 ==="]);
     rows.push([
       "年份", "月份", "总收入", "底薪", "提成",
@@ -57,46 +64,48 @@ export default function HistoryPage() {
   const avgCommission = commissions.length > 0 ? commissions.reduce((a, b) => a + b, 0) / commissions.length : 0;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">综合历史</h1>
-          <p className="text-xs text-muted-foreground mt-0.5">查看所有收支记录</p>
+          <h1 className="text-2xl font-bold">综合历史</h1>
+          <p className="text-sm text-muted-foreground mt-1">查看所有收支记录</p>
         </div>
-        <Button variant="outline" size="sm" className="h-8 text-xs" onClick={handleExportCSV}>
-          <Download className="h-3 w-3 mr-1" />
-          导出CSV
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={handleExportCSV}>
+            <Download className="h-4 w-4 mr-1" />
+            导出CSV
+          </Button>
+        </div>
       </div>
 
       {/* 提成统计 */}
       {commissions.length > 0 && (
         <Card>
-          <CardHeader className="pb-1 pt-3 px-3">
-            <CardTitle className="text-sm flex items-center gap-1.5">
-              <BarChart3 className="h-3.5 w-3.5" />
+          <CardHeader className="pb-2">
+            <CardTitle className="text-base flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
               提成统计
             </CardTitle>
           </CardHeader>
-          <CardContent className="px-3 pb-3">
-            <div className="grid grid-cols-2 gap-3">
+          <CardContent>
+            <div className="grid grid-cols-4 gap-4 text-center">
               <div>
-                <p className="text-[10px] text-muted-foreground">月份数</p>
-                <p className="text-base font-bold tabular-nums">{commissions.length}</p>
+                <p className="text-xs text-muted-foreground">月份数</p>
+                <p className="text-lg font-bold tabular-nums">{commissions.length}</p>
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">平均提成</p>
-                <p className="text-base font-bold tabular-nums">{formatMoney(avgCommission)}</p>
+                <p className="text-xs text-muted-foreground">平均提成</p>
+                <p className="text-lg font-bold tabular-nums">{formatMoney(avgCommission)}</p>
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">最高</p>
-                <p className="text-base font-bold tabular-nums text-emerald-600">
+                <p className="text-xs text-muted-foreground">最高</p>
+                <p className="text-lg font-bold tabular-nums text-emerald-600">
                   {formatMoney(Math.max(...commissions))}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] text-muted-foreground">最低</p>
-                <p className="text-base font-bold tabular-nums text-amber-600">
+                <p className="text-xs text-muted-foreground">最低</p>
+                <p className="text-lg font-bold tabular-nums text-amber-600">
                   {formatMoney(Math.min(...commissions))}
                 </p>
               </div>
@@ -107,185 +116,193 @@ export default function HistoryPage() {
 
       {/* 三类历史记录 */}
       <Tabs defaultValue="income">
-        <TabsList className="w-full h-9">
-          <TabsTrigger value="income" className="text-xs flex-1">工资提成</TabsTrigger>
-          <TabsTrigger value="other" className="text-xs flex-1">其他收入</TabsTrigger>
-          <TabsTrigger value="expense" className="text-xs flex-1">支出记录</TabsTrigger>
+        <TabsList>
+          <TabsTrigger value="income">工资提成</TabsTrigger>
+          <TabsTrigger value="other">其他收入</TabsTrigger>
+          <TabsTrigger value="expense">支出记录</TabsTrigger>
         </TabsList>
 
         {/* 工资提成 */}
         <TabsContent value="income">
-          {incomeHistory.length === 0 ? (
-            <p className="text-center text-xs text-muted-foreground py-8">暂无记录</p>
-          ) : (
-            <div className="space-y-2 mt-2">
-              {[...incomeHistory].reverse().map((r) => {
-                const isExpanded = expandedId === `income-${r.id}`;
-                return (
-                  <div key={r.id} className="rounded-lg border border-border/50 overflow-hidden">
-                    <button
-                      className="w-full flex items-center justify-between p-3 text-left active:bg-muted/50"
-                      onClick={() => setExpandedId(isExpanded ? null : `income-${r.id}`)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-medium tabular-nums">
-                          {r.year}.{r.month.replace("月", "")}
-                        </span>
-                        <span className="text-[10px] text-muted-foreground">
-                          提成 {formatMoney(r.commission)}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-semibold tabular-nums text-emerald-600">
-                          +{formatMoney(r.totalIncome)}
-                        </span>
-                        {isExpanded ? (
-                          <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
-                        ) : (
-                          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-                        )}
-                      </div>
-                    </button>
-                    {isExpanded && (
-                      <div className="border-t border-border/50 px-3 pb-3 pt-2 space-y-1.5">
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">底薪</span>
-                            <span className="tabular-nums">{formatMoney(r.baseSalary)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">紧急</span>
-                            <span className="tabular-nums">{formatMoney(r.toEmergency)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">年度</span>
-                            <span className="tabular-nums">{formatMoney(r.toAnnual)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">平滑</span>
-                            <span className={`tabular-nums ${r.smoothAmount < 0 ? "text-rose-600" : ""}`}>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-16">年份</TableHead>
+                      <TableHead className="w-16">月份</TableHead>
+                      <TableHead className="text-right">总收入</TableHead>
+                      <TableHead className="text-right">底薪</TableHead>
+                      <TableHead className="text-right">提成</TableHead>
+                      <TableHead className="text-right">紧急</TableHead>
+                      <TableHead className="text-right">年度</TableHead>
+                      <TableHead className="text-right">平滑</TableHead>
+                      <TableHead className="text-right">稳健</TableHead>
+                      <TableHead className="text-right">进取</TableHead>
+                      <TableHead className="text-right">灵活</TableHead>
+                      <TableHead className="w-16">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {incomeHistory.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={12} className="text-center text-muted-foreground py-8">
+                          暂无记录
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      [...incomeHistory].reverse().map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="tabular-nums">{r.year}</TableCell>
+                          <TableCell>{r.month}</TableCell>
+                          <TableCell className="text-right tabular-nums font-medium">
+                            {formatMoney(r.totalIncome)}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.baseSalary)}</TableCell>
+                          <TableCell className="text-right tabular-nums font-medium">
+                            {formatMoney(r.commission)}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.toEmergency)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.toAnnual)}</TableCell>
+                          <TableCell className="text-right tabular-nums">
+                            <span className={r.smoothAmount < 0 ? "text-rose-600" : ""}>
                               {formatMoney(r.smoothAmount)}
                             </span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">稳健</span>
-                            <span className="tabular-nums">{formatMoney(r.stableAmount)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">进取</span>
-                            <span className="tabular-nums">{formatMoney(r.growthAmount)}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">灵活</span>
-                            <span className="tabular-nums">{formatMoney(r.flexibleAmount)}</span>
-                          </div>
-                        </div>
-                        <div className="pt-1">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 text-[10px] text-rose-600 hover:text-rose-700"
-                            onClick={() => {
-                              if (confirm("删除后将回滚账户余额，确定？")) deleteIncomeRecord(r.id);
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3 mr-1" />
-                            删除
-                          </Button>
-                        </div>
-                      </div>
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.stableAmount)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.growthAmount)}</TableCell>
+                          <TableCell className="text-right tabular-nums">{formatMoney(r.flexibleAmount)}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-rose-600 hover:text-rose-700"
+                              onClick={() => {
+                                if (confirm("删除后将回滚账户余额，确定？")) deleteIncomeRecord(r.id);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
                     )}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* 其他收入 */}
         <TabsContent value="other">
-          {otherIncomeHistory.length === 0 ? (
-            <p className="text-center text-xs text-muted-foreground py-8">暂无记录</p>
-          ) : (
-            <div className="space-y-2 mt-2">
-              {[...otherIncomeHistory].reverse().map((r) => (
-                <div
-                  key={r.id}
-                  className="flex items-center justify-between rounded-lg border border-border/50 p-3"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium tabular-nums">
-                        {r.year}.{r.month.replace("月", "")}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">{r.type}</span>
-                    </div>
-                    {r.note && (
-                      <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{r.note}</p>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-16">年份</TableHead>
+                      <TableHead className="w-16">月份</TableHead>
+                      <TableHead className="w-24">类型</TableHead>
+                      <TableHead className="text-right">金额(元)</TableHead>
+                      <TableHead>备注</TableHead>
+                      <TableHead className="w-16">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {otherIncomeHistory.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                          暂无记录
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      [...otherIncomeHistory].reverse().map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="tabular-nums">{r.year}</TableCell>
+                          <TableCell>{r.month}</TableCell>
+                          <TableCell>{r.type}</TableCell>
+                          <TableCell className="text-right tabular-nums font-medium">
+                            {formatMoney(r.amount)}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{r.note || "-"}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-rose-600 hover:text-rose-700"
+                              onClick={() => {
+                                if (confirm("删除后将回滚账户余额，确定？")) deleteOtherIncomeRecord(r.id);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
                     )}
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 ml-2">
-                    <span className="text-sm font-semibold tabular-nums text-emerald-600">
-                      +{formatMoney(r.amount)}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-rose-600 hover:text-rose-700"
-                      onClick={() => {
-                        if (confirm("删除后将回滚账户余额，确定？")) deleteOtherIncomeRecord(r.id);
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* 支出记录 */}
         <TabsContent value="expense">
-          {expenseHistory.length === 0 ? (
-            <p className="text-center text-xs text-muted-foreground py-8">暂无记录</p>
-          ) : (
-            <div className="space-y-2 mt-2">
-              {[...expenseHistory].reverse().map((r) => (
-                <div
-                  key={r.id}
-                  className="flex items-center justify-between rounded-lg border border-border/50 p-3"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-medium tabular-nums">
-                        {r.year}.{r.month.replace("月", "")}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground">{r.type}</span>
-                    </div>
-                    {r.note && (
-                      <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{r.note}</p>
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-16">年份</TableHead>
+                      <TableHead className="w-16">月份</TableHead>
+                      <TableHead className="w-28">类型</TableHead>
+                      <TableHead className="text-right">金额(元)</TableHead>
+                      <TableHead>用途</TableHead>
+                      <TableHead className="w-16">操作</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {expenseHistory.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
+                          暂无记录
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      [...expenseHistory].reverse().map((r) => (
+                        <TableRow key={r.id}>
+                          <TableCell className="tabular-nums">{r.year}</TableCell>
+                          <TableCell>{r.month}</TableCell>
+                          <TableCell>{r.type}</TableCell>
+                          <TableCell className="text-right tabular-nums font-medium text-rose-600">
+                            -{formatMoney(r.amount)}
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{r.note || "-"}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-rose-600 hover:text-rose-700"
+                              onClick={() => {
+                                if (confirm("删除后将回滚账户余额，确定？")) deleteExpenseRecord(r.id);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))
                     )}
-                  </div>
-                  <div className="flex items-center gap-2 shrink-0 ml-2">
-                    <span className="text-sm font-semibold tabular-nums text-rose-600">
-                      -{formatMoney(r.amount)}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 text-rose-600 hover:text-rose-700"
-                      onClick={() => {
-                        if (confirm("删除后将回滚账户余额，确定？")) deleteExpenseRecord(r.id);
-                      }}
-                    >
-                      <Trash2 className="h-3 w-3" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>

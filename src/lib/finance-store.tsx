@@ -93,12 +93,6 @@ function loadData(): FinanceData {
       if (!parsed.expenseHistory) parsed.expenseHistory = [];
       if (!parsed.baseSalaryHistory) parsed.baseSalaryHistory = [];
       if (!parsed.incomeHistory) parsed.incomeHistory = [];
-      // 补全新增的年度预算字段
-      for (const yearKey of Object.keys(parsed.basicInfo.annualExpenses)) {
-        const budget = parsed.basicInfo.annualExpenses[yearKey];
-        if (budget.renovation === undefined) budget.renovation = 0;
-        if (budget.wedding === undefined) budget.wedding = 0;
-      }
       return parsed;
     }
   } catch {
