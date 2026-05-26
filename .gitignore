@@ -46,6 +46,11 @@ bin/
 .idea/
 *.iml
 
+# Electron build outputs
+out
+electron/dist
+dist-electron
+
 # OS / misc
 Thumbs.db
 ehthumbs.db

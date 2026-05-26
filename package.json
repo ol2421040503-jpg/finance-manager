@@ -1,7 +1,8 @@
 {
-  "name": "projects",
-  "version": "0.1.0",
+  "name": "sales-finance-manager",
+  "version": "1.0.0",
   "private": true,
+  "main": "electron/dist/main.js",
   "scripts": {
     "build": "bash ./scripts/build.sh",
     "dev": "bash ./scripts/dev.sh",
@@ -10,7 +11,14 @@
     "lint:build": "eslint . --quiet",
     "start": "bash ./scripts/start.sh",
     "ts-check": "tsc -p tsconfig.json",
-    "validate": "pnpm run --parallel '/^(ts-check|lint:build)$/'"
+    "validate": "pnpm run --parallel '/^(ts-check|lint:build)$/'",
+    "electron:dev": "ELECTRON_BUILD=1 pnpm next build && pnpm electron:compile && pnpm electron .",
+    "electron:build-next": "ELECTRON_BUILD=1 pnpm next build",
+    "electron:compile": "pnpm tsup electron/main.ts electron/preload.ts --format cjs --platform node --target node20 --outDir electron/dist --no-splitting --no-minify",
+    "electron:build": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder",
+    "electron:build:win": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder --win",
+    "electron:build:mac": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder --mac",
+    "electron:build:linux": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder --linux"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.958.0",
@@ -78,6 +86,8 @@
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "only-allow": "^1.2.2",
