@@ -4,7 +4,6 @@ copyright: Copyright © 2025
 
 directories:
   output: dist-electron
-  buildResources: build
 
 files:
   - out/**/*
@@ -17,24 +16,10 @@ extraMetadata:
 win:
   target:
     - nsis
-  icon: build/icon.ico
-
-mac:
-  target:
-    - dmg
-  icon: build/icon.icns
-
-linux:
-  target:
-    - AppImage
-  icon: build/icon.png
 
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
-  installerIcon: build/icon.ico
-  uninstallerIcon: build/icon.ico
-  installerHeaderIcon: build/icon.ico
   createDesktopShortcut: true
   createStartMenuShortcut: true
   shortcutName: 销售专属理财管理器

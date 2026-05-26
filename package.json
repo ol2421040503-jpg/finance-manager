@@ -2,6 +2,8 @@
   "name": "sales-finance-manager",
   "version": "1.0.0",
   "private": true,
+  "description": "销售专属理财管理器 - 智能提成分配与资金账户管理",
+  "author": "ol2421040503-jpg",
   "main": "electron/dist/main.js",
   "scripts": {
     "build": "bash ./scripts/build.sh",
