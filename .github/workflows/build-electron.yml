@@ -23,7 +23,9 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Build Next.js static export
-        run: ELECTRON_BUILD=1 pnpm next build
+        env:
+          ELECTRON_BUILD: 1
+        run: pnpm next build
 
       - name: Compile Electron main process
         run: pnpm electron:compile
