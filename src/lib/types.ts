@@ -11,6 +11,8 @@ export interface AnnualBudget {
   propertyFee: number;
   physicalExam: number;
   travel: number;
+  renovation: number;
+  wedding: number;
   other: number;
 }
 
@@ -135,6 +137,8 @@ export const ANNUAL_BUDGET_FIELDS: { label: string; key: keyof AnnualBudget }[] 
   { label: "物业费+宽带", key: "propertyFee" },
   { label: "全家体检", key: "physicalExam" },
   { label: "旅游度假", key: "travel" },
+  { label: "装修", key: "renovation" },
+  { label: "结婚", key: "wedding" },
   { label: "其他", key: "other" },
 ];
 
