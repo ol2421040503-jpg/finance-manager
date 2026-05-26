@@ -9,8 +9,7 @@ function createWindow() {
     height: 800,
     minWidth: 900,
     minHeight: 600,
-    title: '销售专属理财管理器',
-    icon: path.join(__dirname, '../public/icon.png'),
+    title: '\u9500\u552e\u4e13\u5c5e\u7406\u8d22\u7ba1\u7406\u5668',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,

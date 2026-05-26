@@ -1,5 +1,5 @@
 appId: com.finance.sales-manager
-productName: 销售专属理财管理器
+productName: SalesFinanceManager
 copyright: Copyright © 2025
 
 directories:
@@ -22,4 +22,4 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: 销售专属理财管理器
+  shortcutName: SalesFinanceManager
