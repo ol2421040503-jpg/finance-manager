@@ -36,35 +36,35 @@ export default function AllocationPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold">存量资金分配</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          根据基础信息自动计算最优资金分配方案，一次性将现有存款分配到各账户
+        <h1 className="text-xl font-bold">存量资金分配</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">
+          自动计算最优分配方案，一次性将存款分配到各账户
         </p>
       </div>
 
       {/* 当前状态 */}
       <Card>
-        <CardContent className="p-6">
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <CardContent className="p-3">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-sm text-muted-foreground">现有总存款</p>
-              <p className="text-xl font-bold tabular-nums">{formatMoney(total)}</p>
+              <p className="text-[10px] text-muted-foreground">现有总存款</p>
+              <p className="text-base font-bold tabular-nums">{formatMoney(total)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">紧急备用金目标</p>
-              <p className="text-xl font-bold tabular-nums">
+              <p className="text-[10px] text-muted-foreground">紧急备用金目标</p>
+              <p className="text-base font-bold tabular-nums">
                 {formatMoney(basicInfo.monthlyExpenses * basicInfo.emergencyMonths)}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">年度准备金目标</p>
-              <p className="text-xl font-bold tabular-nums">{formatMoney(annualTotal)}</p>
+              <p className="text-[10px] text-muted-foreground">年度准备金目标</p>
+              <p className="text-base font-bold tabular-nums">{formatMoney(annualTotal)}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground">平滑基金目标</p>
-              <p className="text-xl font-bold tabular-nums">
+              <p className="text-[10px] text-muted-foreground">平滑基金目标</p>
+              <p className="text-base font-bold tabular-nums">
                 {formatMoney(basicInfo.monthlyExpenses * basicInfo.smoothMonths)}
               </p>
             </div>
@@ -73,56 +73,55 @@ export default function AllocationPage() {
       </Card>
 
       {/* 计算按钮 */}
-      <Button onClick={handleCalculate} size="lg" className="bg-amber-600 hover:bg-amber-700 text-white">
-        <Calculator className="h-5 w-5 mr-2" />
+      <Button onClick={handleCalculate} className="w-full h-11 bg-amber-600 hover:bg-amber-700 text-white">
+        <Calculator className="h-4 w-4 mr-2" />
         计算分配方案
       </Button>
 
       {/* 分配结果 */}
       {allocation && (
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              分配方案（基于 {currentYear} 年预算）
+          <CardHeader className="pb-2 pt-3 px-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              分配方案（{currentYear}年预算）
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="px-3 pb-3 space-y-2">
+            <p className="text-xs text-muted-foreground">
               现有总存款：<span className="font-semibold text-foreground">{formatMoney(total)} 元</span>
             </p>
             <Separator />
 
-            {/* 优先级分配 */}
-            <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider">优先级分配</p>
+            <p className="text-[10px] font-semibold text-amber-700 uppercase tracking-wider">优先级分配</p>
             {["紧急备用金", "年度大额支出准备金", "收入平滑基金"].map((name) => (
-              <div key={name} className="flex items-center justify-between py-1">
-                <span className="text-sm">{name}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">{pct(allocation[name])}</span>
-                  <span className="text-sm font-semibold tabular-nums">{formatMoney(allocation[name])} 元</span>
+              <div key={name} className="flex items-center justify-between py-0.5">
+                <span className="text-xs">{name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground">{pct(allocation[name])}</span>
+                  <span className="text-xs font-semibold tabular-nums">{formatMoney(allocation[name])} 元</span>
                 </div>
               </div>
             ))}
 
             <Separator />
-            <p className="text-xs font-semibold text-sky-700 uppercase tracking-wider">
-              剩余资金分配（扣除前三项后）
+            <p className="text-[10px] font-semibold text-sky-700 uppercase tracking-wider">
+              剩余资金分配
             </p>
             {["提前还款准备金", "稳健投资", "进取投资", "灵活消费"].map((name) => (
-              <div key={name} className="flex items-center justify-between py-1">
-                <span className="text-sm">{name}</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground">{pct(allocation[name])}</span>
-                  <span className="text-sm font-semibold tabular-nums">{formatMoney(allocation[name])} 元</span>
+              <div key={name} className="flex items-center justify-between py-0.5">
+                <span className="text-xs">{name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground">{pct(allocation[name])}</span>
+                  <span className="text-xs font-semibold tabular-nums">{formatMoney(allocation[name])} 元</span>
                 </div>
               </div>
             ))}
 
             <Separator />
-            <div className="flex items-center gap-2 text-sm text-emerald-600">
-              <CheckCircle2 className="h-4 w-4" />
-              所有资金已全部分配完毕，无剩余
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              所有资金已全部分配完毕
             </div>
           </CardContent>
         </Card>
@@ -130,24 +129,22 @@ export default function AllocationPage() {
 
       {/* 应用按钮 */}
       {allocation && (
-        <div className="flex items-center gap-3">
+        <div className="space-y-2">
           <Button
             onClick={handleApply}
-            size="lg"
-            className="bg-amber-600 hover:bg-amber-700 text-white"
+            className="w-full h-11 bg-amber-600 hover:bg-amber-700 text-white"
             disabled={applied}
           >
             {applied ? "已应用" : "应用分配方案到账户"}
           </Button>
-          {applied && (
-            <div className="flex items-center gap-2 text-sm text-emerald-600">
-              <CheckCircle2 className="h-4 w-4" />
-              分配方案已应用，账户余额已更新
+          {applied ? (
+            <div className="flex items-center gap-1.5 text-xs text-emerald-600 justify-center">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              分配方案已应用
             </div>
-          )}
-          {!applied && (
-            <div className="flex items-center gap-2 text-sm text-amber-600">
-              <AlertTriangle className="h-4 w-4" />
+          ) : (
+            <div className="flex items-center gap-1.5 text-xs text-amber-600 justify-center">
+              <AlertTriangle className="h-3.5 w-3.5" />
               应用后将覆盖当前所有账户余额
             </div>
           )}
@@ -156,15 +153,15 @@ export default function AllocationPage() {
 
       {/* 当前账户余额 */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">当前账户余额</CardTitle>
+        <CardHeader className="pb-2 pt-3 px-3">
+          <CardTitle className="text-sm">当前账户余额</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-3 sm:grid-cols-2">
+        <CardContent className="px-3 pb-3">
+          <div className="space-y-1.5">
             {Object.entries(accounts).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between border-b border-border/50 pb-2">
-                <span className="text-sm">{ACCOUNT_CN[key as keyof typeof ACCOUNT_CN]}</span>
-                <span className="text-sm font-semibold tabular-nums">{formatMoney(value)} 元</span>
+              <div key={key} className="flex items-center justify-between">
+                <span className="text-xs">{ACCOUNT_CN[key as keyof typeof ACCOUNT_CN]}</span>
+                <span className="text-xs font-semibold tabular-nums">{formatMoney(value)} 元</span>
               </div>
             ))}
           </div>

@@ -23,8 +23,8 @@
 │   ├── app/                # 页面路由与布局
 │   │   ├── layout.tsx      # 根布局
 │   │   ├── globals.css     # 全局样式（琥珀金主题）
-│   │   └── (app)/          # 应用路由组（侧边栏布局）
-│   │       ├── layout.tsx  # 应用布局（侧边栏 + 主内容）
+│   │   └── (app)/          # 应用路由组（移动端布局）
+│   │       ├── layout.tsx  # 应用布局（底部 TabBar + 更多 Sheet + 主内容）
 │   │       ├── page.tsx    # 总览仪表盘
 │   │       ├── basic-info/ # 基础信息设置
 │   │       ├── allocation/ # 存量资金分配
@@ -83,5 +83,7 @@
 
 - shadcn/ui 组件库，位于 src/components/ui/
 - 琥珀金主色调（amber-600/700），温暖可信赖的金融风格
-- 深色侧边栏 + 暖白主内容区
+- 移动端优先设计，底部 TabBar 导航 + 更多功能 Sheet
+- iOS/Android 适配：safe area insets、触摸优化（44px 最小点击区域）
 - 卡片圆角 rounded-xl，金额右对齐千分位格式
+- 宽表格用可折叠卡片列表替代，表单全宽纵向排列

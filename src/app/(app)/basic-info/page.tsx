@@ -114,22 +114,22 @@ export default function BasicInfoPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-bold">基础信息</h1>
-        <p className="text-sm text-muted-foreground mt-1">设置基本财务参数和年度大额支出预算</p>
+        <h1 className="text-xl font-bold">基础信息</h1>
+        <p className="text-xs text-muted-foreground mt-0.5">设置基本财务参数和年度大额支出预算</p>
       </div>
 
       {/* 基本财务信息 */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-base">基本财务信息</CardTitle>
+        <CardHeader className="pb-2 pt-4 px-4">
+          <CardTitle className="text-sm">基本财务信息</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <CardContent className="px-4 pb-4">
+          <div className="space-y-3">
             {BASIC_FIELDS.map((field) => (
-              <div key={field.key} className="space-y-1.5">
-                <Label htmlFor={field.key} className="text-sm">
+              <div key={field.key} className="space-y-1">
+                <Label htmlFor={field.key} className="text-xs">
                   {field.label}
                 </Label>
                 <Input
@@ -138,9 +138,9 @@ export default function BasicInfoPage() {
                   step={field.key === "mortgageRate" ? "0.1" : "any"}
                   value={formData[field.key] || ""}
                   onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                  className="tabular-nums"
+                  className="tabular-nums h-10"
                 />
-                <p className="text-xs text-muted-foreground">{field.help}</p>
+                <p className="text-[10px] text-muted-foreground">{field.help}</p>
               </div>
             ))}
           </div>
@@ -149,33 +149,34 @@ export default function BasicInfoPage() {
 
       {/* 年度大额支出预算 */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-base">年度大额支出预算</CardTitle>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => changeYear(-1)}>
-                <ChevronLeft className="h-4 w-4" />
+            <CardTitle className="text-sm">年度大额支出预算</CardTitle>
+            <div className="flex items-center gap-1">
+              <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => changeYear(-1)}>
+                <ChevronLeft className="h-3 w-3" />
               </Button>
-              <span className="text-sm font-semibold tabular-nums w-12 text-center">{currentYear}</span>
-              <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => changeYear(1)}>
-                <ChevronRight className="h-4 w-4" />
+              <span className="text-xs font-semibold tabular-nums w-10 text-center">{currentYear}</span>
+              <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => changeYear(1)}>
+                <ChevronRight className="h-3 w-3" />
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
+                className="h-7 text-[10px] px-1.5"
                 onClick={() => setCurrentYear(String(new Date().getFullYear()))}
               >
-                <RotateCcw className="h-3 w-3 mr-1" />
+                <RotateCcw className="h-3 w-3 mr-0.5" />
                 今年
               </Button>
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2">
+        <CardContent className="px-4 pb-4">
+          <div className="space-y-3">
             {ANNUAL_BUDGET_FIELDS.map((field) => (
-              <div key={field.key} className="space-y-1.5">
-                <Label htmlFor={`annual-${field.key}`} className="text-sm">
+              <div key={field.key} className="space-y-1">
+                <Label htmlFor={`annual-${field.key}`} className="text-xs">
                   {field.label}
                 </Label>
                 <Input
@@ -184,15 +185,15 @@ export default function BasicInfoPage() {
                   step="any"
                   value={currentBudget[field.key] || ""}
                   onChange={(e) => handleAnnualChange(field.key, e.target.value)}
-                  className="tabular-nums"
+                  className="tabular-nums h-10"
                 />
               </div>
             ))}
           </div>
-          <Separator className="my-4" />
+          <Separator className="my-3" />
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">年度支出总计：</span>
-            <span className="text-lg font-bold tabular-nums text-rose-600">
+            <span className="text-xs font-medium">年度支出总计：</span>
+            <span className="text-base font-bold tabular-nums text-rose-600">
               {formatMoney(annualTotal)} 元
             </span>
           </div>
@@ -200,19 +201,24 @@ export default function BasicInfoPage() {
       </Card>
 
       {/* 操作按钮 */}
-      <div className="flex flex-wrap gap-3">
-        <Button onClick={handleSave} className="bg-amber-600 hover:bg-amber-700 text-white">
+      <div className="space-y-2">
+        <Button
+          onClick={handleSave}
+          className="w-full h-11 bg-amber-600 hover:bg-amber-700 text-white"
+        >
           <Save className="h-4 w-4 mr-2" />
-          {saved ? "已保存" : "保存基础信息"}
+          {saved ? "已保存" : "保存设置"}
         </Button>
-        <Button variant="outline" onClick={handleExport}>
-          <Download className="h-4 w-4 mr-2" />
-          导出备份
-        </Button>
-        <Button variant="outline" onClick={handleImport}>
-          <Upload className="h-4 w-4 mr-2" />
-          从备份还原
-        </Button>
+        <div className="grid grid-cols-2 gap-2">
+          <Button variant="outline" onClick={handleExport} className="h-10 text-xs">
+            <Download className="h-3.5 w-3.5 mr-1.5" />
+            导出备份
+          </Button>
+          <Button variant="outline" onClick={handleImport} className="h-10 text-xs">
+            <Upload className="h-3.5 w-3.5 mr-1.5" />
+            导入备份
+          </Button>
+        </div>
       </div>
     </div>
   );
