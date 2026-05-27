@@ -1,26 +1,17 @@
 appId: com.finance.sales-manager
 productName: SalesFinanceManager
-copyright: Copyright © 2025
-
 directories:
   output: dist-electron
-
 files:
   - out/**/*
   - electron/dist/**/*
   - package.json
-  - "!**/node_modules/**"
-
 extraMetadata:
-  main: electron/dist/main.js
-
+  dependencies: {}
+asar: true
 win:
-  target:
-    - nsis
-
+  target: nsis
+  artifactName: "${productName} Setup ${version}.${ext}"
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
-  createDesktopShortcut: true
-  createStartMenuShortcut: true
-  shortcutName: SalesFinanceManager
