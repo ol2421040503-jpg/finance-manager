@@ -1,0 +1,47 @@
+name: Build Electron App
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-win:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Build Next.js static export
+        run: |
+          copy next.config.electron.ts next.config.ts
+          pnpm next build
+
+      - name: Compile Electron main process
+        run: pnpm electron:compile
+
+      - name: Strip dependencies for packaging
+        run: |
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          $pkg.dependencies = @{}
+          $pkg | ConvertTo-Json -Depth 10 | Set-Content package.json
+
+      - name: Build Electron (Windows)
+        run: pnpm electron-builder --win --config electron-builder.yml --publish never
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: win-installer
+          path: dist-electron/*.exe
+          if-no-files-found: warn
