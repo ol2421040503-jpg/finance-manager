@@ -16,7 +16,7 @@
     "validate": "pnpm run --parallel '/^(ts-check|lint:build)$/'",
     "electron:dev": "ELECTRON_BUILD=1 pnpm next build && pnpm electron:compile && pnpm electron .",
     "electron:build-next": "ELECTRON_BUILD=1 pnpm next build",
-    "electron:compile": "pnpm tsup electron/main.ts electron/preload.ts --format cjs --platform node --target node20 --outDir electron/dist --no-splitting --no-minify",
+    "electron:compile": "pnpm tsup electron/main.ts electron/preload.ts --format cjs --platform node --target node20 --outDir electron/dist --no-splitting --no-minify --external electron",
     "electron:build": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder",
     "electron:build:win": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder --win",
     "electron:build:mac": "pnpm electron:build-next && pnpm electron:compile && pnpm electron-builder --mac",
