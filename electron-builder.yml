@@ -10,6 +10,10 @@ files:
   - electron/dist/**/*
   - package.json
 
+# 不打包任何 node_modules（纯静态前端应用不需要运行时依赖）
+# electron-builder 默认会打包 dependencies，这里显式排除
+buildDependenciesFromSource: false
+
 extraMetadata:
   main: electron/dist/main.js
 
