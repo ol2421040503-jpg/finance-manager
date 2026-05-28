@@ -1,7 +1,15 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, protocol, net } from 'electron';
 import path from 'path';
 
 let mainWindow: BrowserWindow | null = null;
+
+// 注册自定义协议，用于加载本地静态资源
+function registerProtocol() {
+  protocol.handle('app', (request) => {
+    const filePath = path.join(__dirname, '../out', new URL(request.url).pathname);
+    return net.fetch(`file://${filePath.replace(/\\/g, '/')}`);
+  });
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -17,12 +25,12 @@ function createWindow() {
     },
   });
 
-  // 开发环境加载 dev server，生产环境加载静态文件
+  // 开发环境加载 dev server，生产环境通过自定义协议加载
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL('http://localhost:5000');
     mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../out/index.html'));
+    mainWindow.loadURL('app://./index.html');
   }
 
   mainWindow.on('closed', () => {
@@ -30,7 +38,10 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  registerProtocol();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
