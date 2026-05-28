@@ -3,54 +3,43 @@ import path from 'path';
 
 let mainWindow: BrowserWindow | null = null;
 
-// 注册自定义协议，用于加载本地静态资源
-function registerProtocol() {
-  protocol.handle('app', (request) => {
-    const filePath = path.join(__dirname, '../out', new URL(request.url).pathname);
-    return net.fetch(`file://${filePath.replace(/\\/g, '/')}`);
-  });
-}
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 800,
-    minWidth: 900,
-    minHeight: 600,
-    title: '\u9500\u552e\u4e13\u5c5e\u7406\u8d22\u7ba1\u7406\u5668',
+    title: '销售专属理财管理器',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
       contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
-  // 开发环境加载 dev server，生产环境通过自定义协议加载
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.loadURL('http://localhost:5000');
-    mainWindow.webContents.openDevTools();
-  } else {
-    mainWindow.loadURL('app://./index.html');
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  // 加载 app:// 协议的首页
+  mainWindow.loadURL('app://salesfinance/index.html');
 }
 
+// 注册自定义协议，将 app://salesfinance/xxx 映射到本地 out/xxx
 app.whenReady().then(() => {
-  registerProtocol();
+  protocol.handle('app', (request) => {
+    // request.url 格式: app://salesfinance/_next/static/xxx 或 app://salesfinance/index.html
+    const url = new URL(request.url);
+    // 提取路径部分（去掉 hostname）
+    const filePath = url.pathname;
+    // 映射到本地 out 目录
+    const absolutePath = path.join(__dirname, '..', 'out', filePath);
+    return net.fetch(`file://${absolutePath}`);
+  });
+
   createWindow();
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  app.quit();
 });
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });

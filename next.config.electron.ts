@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
-  // Electron 环境下使用 assetPrefix 指向自定义协议
-  assetPrefix: 'app://./',
+  // 不设置 assetPrefix，使用默认的 /_next/ 路径
+  // Electron 中通过 protocol.handle 将 app:// 映射到本地 out/ 目录
 };
 
 export default nextConfig;
